@@ -1,9 +1,26 @@
 import React, { Component } from 'react'
 import Form from './components/Form'
 import DictionaryTable from './components/DictionaryTable'
-import { mockData } from './mocks/mockData'
 import './App.css'
 import DataSetTable from './components/DataSetTable';
+
+const mockData = {
+  "data": [
+      {
+          "product": "Apple iPhone 6s",
+          "color": "Stonegrey",
+          "price": "CHF 769"
+      }, {
+          "product": "Samsung Galaxy S8",
+          "color": "Midnight Black",
+          "price": "CHF 569"
+      }, {
+          "product": "Huawei P9",
+          "color": "Mystic Silver",
+          "price": "CHF 272"
+      }
+  ]
+};
 
 class App extends Component {
   constructor() {
@@ -27,15 +44,8 @@ class App extends Component {
     // extracting the data from mock file
     let data = mockData.data || [];
 
-    // put it in the states
-    if (data.length > 0) {
-      this.setState({
-        originalDataSet: data
-      })
-    }
-
     // when mouting component update the state with the local storage
-    this.hydrateStateWithLocalStorage();
+    this.updateStateWithTheLocalStorage();
 
     // add event listener to save state to localStorage
     // when user leaves/refreshes the page
@@ -43,7 +53,15 @@ class App extends Component {
       "beforeunload",
       this.saveStateToLocalStorage.bind(this)
     );
+    
+    // put it in the states
+    if (data.length > 0) {
+      this.setState({
+        originalDataSet: data
+      })
+    }    
   }
+  
   /**
    * When component is unmounted updates the the local storage
    * 
@@ -58,7 +76,7 @@ class App extends Component {
 
     // saves if component has a chance to unmount
     this.saveStateToLocalStorage();
-}
+  }
 
   /**
    * @method localStorageSetItems
@@ -94,6 +112,7 @@ class App extends Component {
       }
     }
   }
+
   /**
    * @method validateInputs
    * @param  {Array} dictionaryItems
@@ -102,10 +121,12 @@ class App extends Component {
     let _this = this || {};
     dictionaryItems.forEach(item => {
       // check if domain or range is not duplicated
-      if(_this.state.domain === item.domain || _this.state.range === item.range) {
+      if (_this.state.domain === item.domain || _this.state.range === item.range) {
+
         let domain = document.getElementById('domain');
         domain.classList.add('validate');
         domain.classList.add('invalid');
+
         let range = document.getElementById('range');
         range.classList.add('validate');
         range.classList.add('invalid');
@@ -162,6 +183,7 @@ class App extends Component {
       domain: '',
       range: '',
     });
+    
   }
 
   /**
@@ -193,7 +215,11 @@ class App extends Component {
         editedItems = dictionaryItems.filter((item) => item.id === id);
     // filter out the item being deleted
 
-    this.setState({ domain: editedItems[0].domain, range: editedItems[0].range, editedId: editedItems[0].id });
+    this.setState({ 
+      domain: editedItems[0].domain, 
+      range: editedItems[0].range, 
+      editedId: editedItems[0].id 
+    });
   }
 
   /**
@@ -209,7 +235,9 @@ class App extends Component {
           updatedItems = dictionaryItems.filter(item => item.id !== id);
     // filter out the item being deleted
 
-    this.setState({ dictionaryItems: updatedItems });
+    this.setState({ 
+      dictionaryItems: updatedItems
+    });
 
   }
 
@@ -223,6 +251,7 @@ class App extends Component {
   render = () => {
     return (
       <div className="container">
+
         <Form 
           handleFormSubmit={ this.handleFormSubmit } 
           handleInputChange={ this.handleInputChange } 
@@ -240,6 +269,7 @@ class App extends Component {
           dictionaryItems={ this.state.dictionaryItems }
           originalDataSet={ this.state.originalDataSet }
         />
+
       </div>
     );
   }

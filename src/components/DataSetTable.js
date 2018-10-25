@@ -26,14 +26,17 @@ class DataSetTable extends Component {
      * @method render
      * @return {XML}
      */
-    render() {
-        let originalDataSet = this.props.originalDataSet;
+    render = () => {
+        const originalDataSet = this.props.originalDataSet;
 
         return (
             <div className="container">
                 <div className="row">
+
                     <h5 className="center-align">Dataset info:</h5>
+
                     <table>
+
                         <thead>
                             <tr>
                                 <th>Product</th>
@@ -41,6 +44,7 @@ class DataSetTable extends Component {
                                 <th>Price</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             {originalDataSet.map(item => {
                                 return (
@@ -53,6 +57,7 @@ class DataSetTable extends Component {
                             })}
                         </tbody>
                     </table>
+
                 </div>
             </div>
         )
