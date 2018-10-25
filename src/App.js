@@ -35,7 +35,36 @@ class App extends Component {
     }
 
     // when mouting component update the state with the local storage
-    this.updateStateWithTheLocalStorage();
+    this.hydrateStateWithLocalStorage();
+
+    // add event listener to save state to localStorage
+    // when user leaves/refreshes the page
+    window.addEventListener(
+      "beforeunload",
+      this.saveStateToLocalStorage.bind(this)
+    );
+  }
+
+  componentWillUnmount = () => {
+    window.removeEventListener(
+      "beforeunload",
+      this.saveStateToLocalStorage.bind(this)
+    );
+
+    // saves if component has a chance to unmount
+    this.saveStateToLocalStorage();
+}
+
+  /**
+   * @method localStorageSetItems
+   * @return {void}
+   */
+  saveStateToLocalStorage = () => {
+    // for every item in React state
+    for (let key in this.state) {
+      // save to localStorage
+      localStorage.setItem(key, JSON.stringify(this.state[key]));
+    }
   }
   
   /**
@@ -107,9 +136,6 @@ class App extends Component {
         }
         
       });
-      
-      // update localStorage
-      this.localStorageSetItems('dictionaryItems', dictionaryItems);
 
     } else {
       // new input
@@ -130,9 +156,6 @@ class App extends Component {
       domain: '',
       range: '',
     });
-    
-    // update localStorage
-    this.localStorageSetItems('dictionaryItems', dictionaryItems)
   }
 
   /**
@@ -182,18 +205,6 @@ class App extends Component {
 
     this.setState({ dictionaryItems: updatedItems });
 
-    this.localStorageSetItems('dictionaryItems', updatedItems)
-  }
-
-  
-  /**
-   * @method localStorageSetItems
-   * @param  {string} objectName
-   * @param  {object} object
-   */
-  localStorageSetItems = (objectName, object) => {
-    // update localStorage
-    localStorage.setItem(objectName, JSON.stringify(object));
   }
 
   
