@@ -11,6 +11,7 @@ class App extends Component {
     this.state = {
       domain: '',
       range: '',
+      editedId: 0,
       originalDataSet: [],
       dictionaryItems: [],
     }
@@ -59,6 +60,28 @@ class App extends Component {
       }
     }
   }
+  /**
+   * @method validateInputs
+   * @param  {Array} dictionaryItems
+   * @param {number} itemId
+   */
+  validateInputs = (dictionaryItems, itemId) => {
+    let _this = this || {};
+    dictionaryItems.forEach(item => {
+      // check if domain or range is not duplicated
+      if(_this.state.domain === item.domain || _this.state.range === item.range) {
+        let domain = document.getElementById('domain');
+        domain.classList.add('validate');
+        domain.classList.add('invalid');
+        let range = document.getElementById('range');
+        range.classList.add('validate');
+        range.classList.add('invalid');
+        
+        // eslint-disable-next-line
+        throw 'Domain or range is duplicated';
+      }
+    });
+  }
 
   /**
    * @method handleFormSubmit
@@ -67,39 +90,49 @@ class App extends Component {
    */
   handleFormSubmit = (event) => {
     event.preventDefault()
-
     // copy current list of dictionaryItems
     let dictionaryItems = [...this.state.dictionaryItems],
         id = 1 + Math.random();
     // generates a random id
+    if (this.state.editedId !== 0) {
+      // edit mode
+      // validate edited inputs before updating the array
+      this.validateInputs(dictionaryItems);
 
-    dictionaryItems.forEach(item => {
-      // check if domain or range is not duplicated
-      if(this.state.domain === item.domain || this.state.range === item.range) {
-        alert('Domain or range is duplicated');
-        // eslint-disable-next-line
-        throw 'Domain or range is duplicated';
-      }
-    });
+      dictionaryItems.forEach( (item)  => {
 
-    // pushing the object to dictionaryItems array
-    dictionaryItems.push({
-      id: id, 
-      domain: this.state.domain, 
-      range: this.state.range
-    });
+        if (item.id === this.state.editedId) {
+          item.domain = this.state.domain;
+          item.range = this.state.range;
+        }
+        
+      });
+      
+      // update localStorage
+      this.localStorageSetItems('dictionaryItems', dictionaryItems);
+
+    } else {
+      // new input
+      // validate new inputs
+      this.validateInputs(dictionaryItems);
+
+      // udpating dictionary array
+      dictionaryItems.push({
+        id: id, 
+        domain: this.state.domain, 
+        range: this.state.range
+      });
+    }
 
     this.setState({
       dictionaryItems,
+      editedId: 0,
       domain: '',
       range: '',
     });
     
     // update localStorage
-    localStorage.setItem(
-      'dictionaryItems', 
-      JSON.stringify(dictionaryItems)
-    );
+    this.localStorageSetItems('dictionaryItems', dictionaryItems)
   }
 
   /**
@@ -118,6 +151,22 @@ class App extends Component {
     });
   }
 
+    /**
+   * edits the item selected
+   * 
+   * @method editItem
+   * @param  {number} id
+   * @return {void}
+   */
+  editItem = (id) => {
+    // copy current list of dictionaryItems
+    const dictionaryItems = [...this.state.dictionaryItems],
+        editedItems = dictionaryItems.filter((item) => item.id === id);
+    // filter out the item being deleted
+
+    this.setState({ domain: editedItems[0].domain, range: editedItems[0].range, editedId: editedItems[0].id });
+  }
+
   /**
    * Deletes the item selected
    * 
@@ -133,8 +182,18 @@ class App extends Component {
 
     this.setState({ dictionaryItems: updatedItems });
 
+    this.localStorageSetItems('dictionaryItems', updatedItems)
+  }
+
+  
+  /**
+   * @method localStorageSetItems
+   * @param  {string} objectName
+   * @param  {object} object
+   */
+  localStorageSetItems = (objectName, object) => {
     // update localStorage
-    localStorage.setItem('dictionaryItems', JSON.stringify(updatedItems));
+    localStorage.setItem(objectName, JSON.stringify(object));
   }
 
   
@@ -157,11 +216,12 @@ class App extends Component {
         <DictionaryTable 
             dictionaryItems={ this.state.dictionaryItems }
             deleteItem={ this.deleteItem }
+            editItem={ this.editItem }
         />
         <br/>
         <DataSetTable 
-          dictionaryItems={this.state.dictionaryItems}
-          originalDataSet={this.state.originalDataSet}
+          dictionaryItems={ this.state.dictionaryItems }
+          originalDataSet={ this.state.originalDataSet }
         />
       </div>
     );

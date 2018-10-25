@@ -22,10 +22,11 @@ class Table extends Component {
                                     <td>{item.domain}</td>
                                     <td>{item.range}</td>
                                     <td>
-                                        <button 
-                                            className="waves-effect waves-light btn" 
-                                            onClick={this.props.deleteItem.bind(this, item.id)}>
-                                            Remove
+                                        <button className="btn waves-effect waves-light" onClick={this.props.editItem.bind(this, item.id)}>
+                                            <i className="material-icons left">edit</i>Edit
+                                        </button>
+                                        <button className="btn waves-effect waves-light" onClick={this.props.deleteItem.bind(this, item.id)}>
+                                            <i className="material-icons right">remove_circle</i>Remove
                                         </button>
                                     </td>
                                 </tr>
@@ -41,6 +42,7 @@ class Table extends Component {
 
 Table.propTypes = {
     deleteItem: PropTypes.func.isRequired,
+    editItem: PropTypes.func.isRequired,
     dictionaryItems: PropTypes.array.isRequired,
 };
   

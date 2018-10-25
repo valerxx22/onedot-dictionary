@@ -20,6 +20,7 @@ class Form extends Component {
                             onChange={this.props.handleInputChange} 
                             className="validate" />
                         <label htmlFor="domain">Domain</label>
+                        <span className="helper-text" data-error="Duplicated input" data-success="right"></span>
                     </div>
                     <div className="input-field col s6">
                         <input 
@@ -31,6 +32,7 @@ class Form extends Component {
                             onChange={this.props.handleInputChange} 
                             className="validate" />
                         <label htmlFor="range">Range</label>
+                        <span className="helper-text" data-error="Duplicated input" data-success="right"></span>
                     </div>
                 </div>
                 <div className="row">
