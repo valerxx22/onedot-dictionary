@@ -21,7 +21,7 @@ class App extends Component {
    * When component is mounted updates the state
    * 
    * @method componentDidMount
-   * @return {void}
+   * @returns {void}
    */
   componentDidMount = () => {
     // extracting the data from mock file
@@ -44,7 +44,12 @@ class App extends Component {
       this.saveStateToLocalStorage.bind(this)
     );
   }
-
+  /**
+   * When component is unmounted updates the the local storage
+   * 
+   * @method componentWillUnmount
+   * @returns {void}
+   */
   componentWillUnmount = () => {
     window.removeEventListener(
       "beforeunload",
@@ -57,7 +62,7 @@ class App extends Component {
 
   /**
    * @method localStorageSetItems
-   * @return {void}
+   * @returns {void}
    */
   saveStateToLocalStorage = () => {
     // for every item in React state
@@ -69,7 +74,7 @@ class App extends Component {
   
   /**
    * @method updateStateWithTheLocalStorage
-   * @return {void}
+   * @returns {void}
    */
   updateStateWithTheLocalStorage = () => {
     // for all dictionaryItems in state
@@ -92,9 +97,8 @@ class App extends Component {
   /**
    * @method validateInputs
    * @param  {Array} dictionaryItems
-   * @param {number} itemId
    */
-  validateInputs = (dictionaryItems, itemId) => {
+  validateInputs = (dictionaryItems) => {
     let _this = this || {};
     dictionaryItems.forEach(item => {
       // check if domain or range is not duplicated
@@ -115,7 +119,7 @@ class App extends Component {
   /**
    * @method handleFormSubmit
    * @param  {object} event
-   * @return {void}
+   * @returns {void}
    */
   handleFormSubmit = (event) => {
     event.preventDefault()
@@ -131,6 +135,7 @@ class App extends Component {
       dictionaryItems.forEach( (item)  => {
 
         if (item.id === this.state.editedId) {
+          // updating the array with edited inputs
           item.domain = this.state.domain;
           item.range = this.state.range;
         }
@@ -150,6 +155,7 @@ class App extends Component {
       });
     }
 
+    // updating the states
     this.setState({
       dictionaryItems,
       editedId: 0,
@@ -161,7 +167,7 @@ class App extends Component {
   /**
    * @method handleInputChange
    * @param  {object} event
-   * @return {void}
+   * @returns {void}
    */
   handleInputChange = (event) => {
     let input = event.target,
@@ -179,7 +185,7 @@ class App extends Component {
    * 
    * @method editItem
    * @param  {number} id
-   * @return {void}
+   * @returns {void}
    */
   editItem = (id) => {
     // copy current list of dictionaryItems
@@ -195,7 +201,7 @@ class App extends Component {
    * 
    * @method deleteItem
    * @param  {number} id
-   * @return {void}
+   * @returns {void}
    */
   deleteItem = (id) => {
     // copy current list of dictionaryItems

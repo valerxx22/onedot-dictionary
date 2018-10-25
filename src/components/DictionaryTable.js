@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 class Table extends Component {
+    /**
+     * @method render
+     * @returns {XML}
+     */    
     render() {
         const dictionaryItems = this.props.dictionaryItems;
         return (
