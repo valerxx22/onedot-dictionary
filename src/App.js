@@ -1,26 +1,11 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as Actions from './actions/actions';
 import Form from './components/Form'
 import DictionaryTable from './components/DictionaryTable'
 import './App.css'
 import DataSetTable from './components/DataSetTable';
-
-const mockData = {
-  "data": [
-      {
-          "product": "Apple iPhone 6s",
-          "color": "Stonegrey",
-          "price": "CHF 769"
-      }, {
-          "product": "Samsung Galaxy S8",
-          "color": "Midnight Black",
-          "price": "CHF 569"
-      }, {
-          "product": "Huawei P9",
-          "color": "Mystic Silver",
-          "price": "CHF 272"
-      }
-  ]
-};
 
 class App extends Component {
   constructor() {
@@ -29,7 +14,6 @@ class App extends Component {
       domain: '',
       range: '',
       editedId: 0,
-      originalDataSet: [],
       dictionaryItems: [],
     }
   }
@@ -41,9 +25,6 @@ class App extends Component {
    * @returns {void}
    */
   componentDidMount = () => {
-    // extracting the data from mock file
-    let data = mockData.data || [];
-
     // when mouting component update the state with the local storage
     this.updateStateWithTheLocalStorage();
 
@@ -53,13 +34,6 @@ class App extends Component {
       "beforeunload",
       this.saveStateToLocalStorage.bind(this)
     );
-    
-    // put it in the states
-    if (data.length > 0) {
-      this.setState({
-        originalDataSet: data
-      })
-    }    
   }
   
   /**
@@ -267,7 +241,7 @@ class App extends Component {
         <br/>
         <DataSetTable 
           dictionaryItems={ this.state.dictionaryItems }
-          originalDataSet={ this.state.originalDataSet }
+          originalDataSet={ this.props.data }
         />
 
       </div>
@@ -275,4 +249,31 @@ class App extends Component {
   }
 }
 
-export default App;
+/**
+ * Map the state to props.
+ */
+const mapStateToProps = (state) => ({
+  ...state
+})
+
+/**
+ * This function maps actions to props
+ * and binds them so they can be called
+ * directly.
+ *
+ * In this case all actions are mapped
+ * to the `actions` prop.
+ */
+const mapDispatchToProps = (dispatch) => ({
+	actions: bindActionCreators(Actions, dispatch)
+})
+
+/**
+ * Finally the Redux store is connected
+ * to the component with the `connect()`
+ * function.
+ */
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
